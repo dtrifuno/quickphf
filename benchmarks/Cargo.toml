@@ -1,0 +1,33 @@
+[package]
+name = "benchmarks"
+version = "0.0.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+phf = "0.11.2"
+phf_generator = "0.11.2"
+quickphf = { path = "../quickphf" }
+quickphf_codegen = { path = "../quickphf_codegen" }
+
+[dev-dependencies]
+divan = "0.1.0"
+fastrand = "2.0.1"
+
+[build-dependencies]
+rand = "0.8"
+fastrand = "2.0.1"
+phf_codegen = "0.11.2"
+quickphf_codegen = { path = "../quickphf_codegen" }
+
+[[bench]]
+name = "generate"
+harness = false
+
+[[bench]]
+name = "lookup"
+harness = false
+
+[profile.bench]
+lto = true
+opt-level = 3
