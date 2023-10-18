@@ -8,6 +8,10 @@ use quickphf::shared::*;
 const MAX_ALPHA: f64 = 0.99;
 const MIN_C: f64 = 1.5;
 
+fn ilog2(n: u64) -> u32 {
+    63 - n.leading_zeros()
+}
+
 /// Parameters for a PTHash perfect hash function.
 #[derive(Debug)]
 pub struct Phf {
@@ -31,7 +35,7 @@ pub fn generate_phf<H: Eq + Hash>(entries: &[H]) -> Phf {
     }
 
     let n = entries.len() as u64;
-    let lg = n.ilog2() as f64;
+    let lg = ilog2(n) as f64;
     let c = MIN_C + 0.2 * lg;
     let buckets_len = DivisorU64::new(if n > 1 {
         ((c * n as f64) / lg).ceil() as u64
