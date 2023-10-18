@@ -1,4 +1,5 @@
 [workspace]
 resolver = "2"
+exclude = ["benchmarks"]
 
 members = ["quickphf", "quickphf_codegen"]

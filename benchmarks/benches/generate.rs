@@ -1,6 +1,6 @@
 use std::{cell::RefCell, iter::repeat_with};
 
-use quickphf_codegen::generator::generate_phf;
+use quickphf_codegen::phf::generate_phf;
 
 use benchmarks::SIZES;
 
