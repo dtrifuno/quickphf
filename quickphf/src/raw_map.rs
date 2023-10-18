@@ -73,7 +73,7 @@ impl<K, V> RawPhfMap<K, V> {
         K: Borrow<Q>,
         Q: Hash + ?Sized,
     {
-        let key_hash = hash_key(key.borrow(), self.seed);
+        let key_hash = hash_key(key, self.seed);
 
         let bucket = get_bucket(key_hash, self.buckets);
         let pilot_hash = hash_pilot_value(self.pilots_table[bucket]);
