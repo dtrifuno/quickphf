@@ -1,0 +1,39 @@
+name: check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  merge_group:
+
+jobs:
+  clippy-fmt:
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        crate: [quickphf, quickphf_codegen]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy,rustfmt
+      - uses: mozilla-actions/sccache-action@v0.0.3
+      - run: cargo fmt --check -p ${{ matrix.crate }}
+      - run: cargo clippy -p ${{ matrix.crate }}
+  msrv:
+    env:
+      SCCACHE_GHA_ENABLED: "true"
+      RUSTC_WRAPPER: "sccache"
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        crate: [quickphf, quickphf_codegen]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@1.56.0
+      - uses: mozilla-actions/sccache-action@v0.0.3
+      - run: cargo +1.56.0 check -p ${{ matrix.crate }}
