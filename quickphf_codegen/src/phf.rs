@@ -3,7 +3,7 @@
 use core::hash::Hash;
 
 use quickdiv::DivisorU64;
-use quickphf::shared::*;
+use quickphf::shared::{get_bucket, get_index, hash_key, hash_pilot_value};
 
 const MAX_ALPHA: f64 = 0.99;
 const MIN_C: f64 = 1.5;
@@ -22,13 +22,17 @@ pub struct Phf {
 }
 
 /// Generate a perfect hash function using PTHash for the given collection of keys.
+///
+/// # Panics
+///
+/// Panics if `entries` contains a duplicate key.
 pub fn generate_phf<H: Eq + Hash>(entries: &[H]) -> Phf {
     if entries.is_empty() {
         return Phf {
             seed: 0,
             map: vec![],
             // These vectors have to be non-empty so that the number of buckets and codomain
-            // length are non-zero, and thus can be used to instantiate precomputed divisors.
+            // length are non-zero, and thus can be used as divisors.
             pilots_table: vec![0],
             free: vec![0],
         };
@@ -51,7 +55,7 @@ pub fn generate_phf<H: Eq + Hash>(entries: &[H]) -> Phf {
 
     (1..)
         .find_map(|n| try_generate_phf(entries, buckets_len, codomain_len, n << 32))
-        .unwrap()
+        .expect("failed to resolve hash collision")
 }
 
 fn try_generate_phf<H: Eq + Hash>(
@@ -85,9 +89,12 @@ fn try_generate_phf<H: Eq + Hash>(
         let e1 = &window[1];
 
         if e0.hash == e1.hash && e0.bucket == e1.bucket {
-            if entries[e0.idx] == entries[e1.idx] {
-                panic!("duplicate keys at indices {} and {}", e0.idx, e1.idx);
-            }
+            assert!(
+                entries[e0.idx] != entries[e1.idx],
+                "duplicate keys at indices {} and {}",
+                e0.idx,
+                e1.idx
+            );
             return None;
         }
     }
@@ -141,7 +148,7 @@ fn try_generate_phf<H: Eq + Hash>(
             let pilot_hash = hash_pilot_value(pilot);
 
             // Check for collisions with items from previous buckets.
-            for entry in bucket_entries.iter() {
+            for entry in bucket_entries {
                 let destination = get_index(entry.hash, pilot_hash, codomain_len);
 
                 if map[destination as usize] != EMPTY {

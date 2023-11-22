@@ -46,7 +46,7 @@
 //! ```
 
 #![no_std]
-#![forbid(unsafe_code)]
+#![allow(clippy::unreadable_literal)]
 
 #[doc(hidden)]
 pub mod examples;

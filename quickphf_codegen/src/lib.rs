@@ -78,9 +78,10 @@
 //! impl quickphf_codegen::DebugInstantiable for PositionType {}
 //! ```
 //!
-//! 2. Otherwise, the user has to provide a custom implementation. For example, the following struct has
-//!    private fields and thus its values cannot be instantiated using the `{}` syntax, but provides
-//!    a `new` constructor that is a `const fn`. Thus, given
+//! 2. Otherwise, the user has to provide a custom implementation. For example,
+//!    the following struct has private fields and thus its values cannot be
+//!    instantiated using the `{}` syntax, but provides a `new` constructor
+//!    that is a `const fn`. Thus, given
 //!
 //! ```ignore
 //! #[derive(Debug, Hash, PartialEq, Eq)]
@@ -237,7 +238,7 @@ impl<'a, K: ConstInstantiable, V: ConstInstantiable> CodeWriter<'a, K, V> {
 
         for &idx in &self.phf.map {
             if prev_entry {
-                write!(f, ", ")?
+                write!(f, ", ")?;
             } else {
                 prev_entry = true;
             }
@@ -280,12 +281,12 @@ impl<'a, K: ConstInstantiable, V: ConstInstantiable> CodeWriter<'a, K, V> {
         let mut prev_entry = false;
         for entry in entries {
             if prev_entry {
-                write!(f, ", ")?
+                write!(f, ", ")?;
             } else {
                 prev_entry = true;
             }
 
-            entry.fmt_const_new(f)?
+            entry.fmt_const_new(f)?;
         }
 
         write!(f, "]")

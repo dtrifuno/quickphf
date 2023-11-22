@@ -4,6 +4,7 @@ use core::fmt;
 /// implementing type in a `const` context.
 pub trait ConstInstantiable {
     /// Print a `const` expression that can be used to instantiate this value.
+    #[allow(clippy::missing_errors_doc)]
     fn fmt_const_new(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result;
 }
 

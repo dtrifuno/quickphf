@@ -11,10 +11,12 @@ categories = ["algorithms", "data-structures"]
 keywords = ["hashing", "mphf", "hashmap", "codegen"]
 rust-version = "1.56"
 
-
 [dependencies]
 quickdiv = "0.1.1"
 quickphf = { version = "0.1.0", path = "../quickphf" }
+
+[lints]
+workspace = true
 
 [[bin]]
 name = "generate_examples"

@@ -6,7 +6,7 @@ use core::marker::PhantomData;
 
 use quickdiv::DivisorU64;
 
-use crate::shared::*;
+use crate::shared::{get_bucket, get_index, hash_key, hash_pilot_value};
 
 /// An immutable hash table constructed at compile time with perfect hashing which does not store its keys.
 #[derive(Debug)]
@@ -52,7 +52,7 @@ impl<K, V> RawPhfMap<K, V> {
     ///
     /// If `key` is not one of the keys that was used when constructing the map,
     /// `get` will silently return an arbitrary value. If robustness to invalid
-    /// keys is needed, use a [PhfMap][crate::PhfMap] instead.
+    /// keys is needed, use a [`PhfMap`][crate::PhfMap] instead.
     ///
     /// # Panics
     ///
