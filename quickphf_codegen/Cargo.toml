@@ -1,6 +1,6 @@
 [package]
 name = "quickphf_codegen"
-version = "0.1.0"
+version = "0.1.1"
 edition = "2021"
 authors = ["Darko Trifunovski <dtrifuno@gmail.com>"]
 description = "Code generator for creating static maps and sets for use with quickphf"

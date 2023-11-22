@@ -7,9 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2023-11-22
+
 ### Fixed
 
-- Fix implementation to satisfy minimum supported Rust version.
+- Replace uses of built-in `ilog2` with a custom implementation in order to satisfy declared minimum supported Rust version.
 
 ## [0.1.0] - 2023-10-16
 
