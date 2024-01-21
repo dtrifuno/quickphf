@@ -11,7 +11,7 @@ quickphf = { path = "../quickphf" }
 quickphf_codegen = { path = "../quickphf_codegen" }
 
 [dev-dependencies]
-divan = "0.1.0"
+divan = "0.1.11"
 fastrand = "2.0.1"
 
 [build-dependencies]
