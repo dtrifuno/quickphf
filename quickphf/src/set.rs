@@ -1,5 +1,5 @@
 //! An immutable set constructed at compile time with perfect hashing.
-use core::hash::Hash;
+use core::{borrow::Borrow, hash::Hash};
 
 // TODO: Debug impls
 
@@ -86,7 +86,11 @@ impl<K: Eq + Hash> PhfSet<K> {
     /// assert!(PRIME_DIGITS.contains(&2));
     /// assert!(!PRIME_DIGITS.contains(&1));
     /// ```
-    pub fn contains(&self, element: &K) -> bool {
+    pub fn contains<Q>(&self, element: &Q) -> bool
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq + ?Sized,
+    {
         self.get(element).is_some()
     }
 
@@ -101,13 +105,17 @@ impl<K: Eq + Hash> PhfSet<K> {
     /// assert_eq!(EVEN_DIGITS.get(&2), Some(&2));
     /// assert_eq!(EVEN_DIGITS.get(&3), None);
     /// ```
-    pub fn get(&self, element: &K) -> Option<&K> {
+    pub fn get<Q>(&self, element: &Q) -> Option<&K>
+    where
+        K: Borrow<Q>,
+        Q: Hash + Eq + ?Sized,
+    {
         if self.is_empty() {
             return None;
         }
 
         let result = self.raw_map.get(element);
-        if result == element {
+        if result.borrow() == element {
             Some(result)
         } else {
             None
@@ -392,9 +400,8 @@ impl<'a, K> core::iter::FusedIterator for Union<'a, K> where K: Eq + Hash {}
 
 #[cfg(test)]
 mod tests {
-    use crate::examples::EMPTY_SET;
-
     use super::*;
+    use crate::examples::EMPTY_SET;
 
     #[test]
     fn test_empty() {
