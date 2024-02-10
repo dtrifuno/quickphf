@@ -10,7 +10,7 @@ pub trait ConstInstantiable {
 
 /// Provides blanket implementation of [`ConstInstantiable`] which defers to
 /// [`Debug`](core::fmt::Debug) representation of type.
-pub trait DebugInstantiable: std::fmt::Debug {}
+pub trait DebugInstantiable: fmt::Debug {}
 
 impl<T: DebugInstantiable> ConstInstantiable for T {
     fn fmt_const_new(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -118,4 +118,37 @@ where
             }
         }
     }
+}
+
+impl<const N: usize, T: ConstInstantiable> ConstInstantiable for [T; N] {
+    fn fmt_const_new(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt_const_slice_inner(self, f)
+    }
+}
+
+impl<const N: usize, T: ConstInstantiable> ConstInstantiable for &[T; N] {
+    fn fmt_const_new(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        (&self[..]).fmt_const_new(f)
+    }
+}
+
+impl<T: ConstInstantiable> ConstInstantiable for &[T] {
+    fn fmt_const_new(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "&")?;
+        fmt_const_slice_inner(self, f)
+    }
+}
+
+fn fmt_const_slice_inner<T: ConstInstantiable>(
+    slice: &[T],
+    f: &mut fmt::Formatter<'_>,
+) -> fmt::Result {
+    write!(f, "[")?;
+    for (i, value) in slice.iter().enumerate() {
+        value.fmt_const_new(f)?;
+        if i < slice.len() - 1 {
+            write!(f, ", ")?;
+        }
+    }
+    write!(f, "]")
 }
